@@ -38,6 +38,3 @@ def get_items():
     item_list.append({'id': item[0], 'name': item[1], 'description': item[2]})
 
   return jsonify(items=item_list)
-
-if __name__ == '__main__':
-  app.run(debug=True) # debug=True только для разработки! Удалите это в продакшне.
