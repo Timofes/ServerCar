@@ -1,24 +1,43 @@
-from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.orm import sessionmaker
+from flask import Flask, jsonify
+import sqlite3
 
-# Создать объект движка базы данных
-engine = create_engine('sqlite:///database.sqlite')
+app = Flask(__name__)
 
-# Создать таблицу
-class User(Base):
-  __tablename__ = 'users'
+# Путь к базе данных
+DATABASE = 'mydatabase.db'
 
-  id = Column(Integer, primary_key=True)
-  name = Column(String)
-  email = Column(String)
+# Создание таблицы (выполняется один раз)
+def create_table():
+  conn = sqlite3.connect(DATABASE)
+  cursor = conn.cursor()
+  cursor.execute('''
+    CREATE TABLE IF NOT EXISTS items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT,
+      description TEXT
+    )
+  ''')
+  conn.commit()
+  conn.close()
 
-# Создать сеанс базы данных
-Session = sessionmaker(bind=engine)
-session = Session()
+create_table()
 
-# Добавить пользователя в базу данных
-new_user = User(name='John Doe', email='john.doe@example.com')
-session.add(new_user)
 
-# Сохранить изменения в базе данных
-session.commit()
+# Маршрут для получения данных
+@app.route('/api/items')
+def get_items():
+  conn = sqlite3.connect(DATABASE)
+  cursor = conn.cursor()
+  cursor.execute("SELECT * FROM items")
+  items = cursor.fetchall()
+  conn.close()
+
+  # Преобразование результатов в JSON
+  item_list = []
+  for item in items:
+    item_list.append({'id': item[0], 'name': item[1], 'description': item[2]})
+
+  return jsonify(items=item_list)
+
+if __name__ == '__main__':
+  app.run(debug=True) # debug=True только для разработки! Удалите это в продакшне.
