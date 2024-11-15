@@ -1,0 +1,24 @@
+from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy.orm import sessionmaker
+
+# Создать объект движка базы данных
+engine = create_engine('sqlite:///database.sqlite')
+
+# Создать таблицу
+class User(Base):
+  __tablename__ = 'users'
+
+  id = Column(Integer, primary_key=True)
+  name = Column(String)
+  email = Column(String)
+
+# Создать сеанс базы данных
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# Добавить пользователя в базу данных
+new_user = User(name='John Doe', email='john.doe@example.com')
+session.add(new_user)
+
+# Сохранить изменения в базе данных
+session.commit()
