@@ -31,10 +31,15 @@ def get_items():
   cursor.execute("SELECT * FROM items")
   items = cursor.fetchall()
   conn.close()
-
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
   # Преобразование результатов в JSON
   item_list = []
   for item in items:
     item_list.append({'id': item[0], 'name': item[1], 'description': item[2]})
 
   return jsonify(items=item_list)
+
+if __name__ == '__main__':
+  app.run(debug=True, host='44.226.145.213', port=5000)
