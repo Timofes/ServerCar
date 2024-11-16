@@ -42,4 +42,4 @@ app.listen(port, () => {
   return jsonify(items=item_list)
 
 if __name__ == '__main__':
-  app.run(debug=True, host='44.226.145.213', port=5000)
+  app.run(debug=True, host='0.0.0.0', port=5000)
